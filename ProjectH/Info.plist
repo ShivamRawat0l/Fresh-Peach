@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPWRITE_BUCKET_ID</key>
+	<string>${APPWRITE_BUCKET_ID}</string>
+	<key>APPWRITE_AUDIO_COLLECTION_ID</key>
+	<string>${APPWRITE_AUDIO_COLLECTION_ID}</string>
+	<key>APPWRITE_USER_COLLECTION_ID</key>
+	<string>${APPWRITE_USER_COLLECTION_ID}</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.359056333648-or43bg19h4tjj5r23b5vd155065927kb</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>io.appwrite</string>
+		</dict>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UILaunchScreen</key>
+		<dict>
+			<key>UIColorName</key>
+			<string>red</string>
+		</dict>
+	</dict>
+	<key>GIDClientID</key>
+	<string>${GID_CLIENT_ID}</string>
+	<key>APPWRITE_PROJECT_KEY</key>
+	<string>${APPWRITE_PROJECT_KEY}</string>
+	<key>APPWRITE_DATABASE_ID</key>
+	<string>${APPWRITE_DATABASE_ID}</string>
+</dict>
+</plist>
