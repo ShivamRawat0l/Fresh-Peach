@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		5E5C11B52A2520F4001FBCCE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5C11B42A2520F4001FBCCE /* AppDelegate.swift */; };
 		5E5C11B82A25C762001FBCCE /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5C11B72A25C762001FBCCE /* Config.swift */; };
+		5E5C11BA2A25D97B001FBCCE /* Hoots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5C11B92A25D97B001FBCCE /* Hoots.swift */; };
+		5E9707402A2723660039A5C0 /* AudioComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E97073F2A2723660039A5C0 /* AudioComponent.swift */; };
+		5E9707422A27B5200039A5C0 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9707412A27B5200039A5C0 /* AudioPlayer.swift */; };
+		5E9797F92A28D62E00077278 /* credits.txt in Sources */ = {isa = PBXBuildFile; fileRef = 5EF30EFB2A20C780008546F3 /* credits.txt */; };
+		5E9797FB2A28D64200077278 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9797FA2A28D64200077278 /* Constants.swift */; };
 		5ED9E34E2A206DEB00BFBDF1 /* ProjectHApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED9E34D2A206DEB00BFBDF1 /* ProjectHApp.swift */; };
 		5ED9E3502A206DEB00BFBDF1 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED9E34F2A206DEB00BFBDF1 /* Onboarding.swift */; };
 		5ED9E3522A206DED00BFBDF1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5ED9E3512A206DED00BFBDF1 /* Assets.xcassets */; };
@@ -32,13 +37,17 @@
 		5E5C11B42A2520F4001FBCCE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5E5C11B62A253F44001FBCCE /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		5E5C11B72A25C762001FBCCE /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		5E5C11B92A25D97B001FBCCE /* Hoots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hoots.swift; sourceTree = "<group>"; };
+		5E97073F2A2723660039A5C0 /* AudioComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioComponent.swift; sourceTree = "<group>"; };
+		5E9707412A27B5200039A5C0 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		5E9797FA2A28D64200077278 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5ED9E34A2A206DEB00BFBDF1 /* ProjectH.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectH.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ED9E34D2A206DEB00BFBDF1 /* ProjectHApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectHApp.swift; sourceTree = "<group>"; };
 		5ED9E34F2A206DEB00BFBDF1 /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		5ED9E3512A206DED00BFBDF1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5ED9E3542A206DED00BFBDF1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5EF30EF42A20B654008546F3 /* RootNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigator.swift; sourceTree = "<group>"; };
-		5EF30EFB2A20C780008546F3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5EF30EFB2A20C780008546F3 /* credits.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = credits.txt; sourceTree = "<group>"; };
 		5EF30F0A2A214584008546F3 /* Homescreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Homescreen.swift; sourceTree = "<group>"; };
 		5EF30F0C2A2145D0008546F3 /* Detailscreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detailscreen.swift; sourceTree = "<group>"; };
 		5EF30F102A214603008546F3 /* Help.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help.swift; sourceTree = "<group>"; };
@@ -85,6 +94,7 @@
 		5ED9E34C2A206DEB00BFBDF1 /* ProjectH */ = {
 			isa = PBXGroup;
 			children = (
+				5EF30EFB2A20C780008546F3 /* credits.txt */,
 				5ED9E3532A206DED00BFBDF1 /* Preview Content */,
 				5EF30EF82A20C76D008546F3 /* Utils */,
 				5ED9E35B2A206E0500BFBDF1 /* Screens */,
@@ -134,8 +144,9 @@
 		5EF30EF82A20C76D008546F3 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				5EF30EFB2A20C780008546F3 /* Constants.swift */,
 				5E5C11B72A25C762001FBCCE /* Config.swift */,
+				5E9707412A27B5200039A5C0 /* AudioPlayer.swift */,
+				5E9797FA2A28D64200077278 /* Constants.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -171,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				5EFDB8952A2306E500E0F3F3 /* GoogleAuth.swift */,
+				5E5C11B92A25D97B001FBCCE /* Hoots.swift */,
 				5EFDB8922A229A2A00E0F3F3 /* AudioManager.swift */,
 				5EFDB8972A23070900E0F3F3 /* Appwrite.swift */,
 			);
@@ -189,6 +201,7 @@
 		5EFDB89B2A23A6BF00E0F3F3 /* components */ = {
 			isa = PBXGroup;
 			children = (
+				5E97073F2A2723660039A5C0 /* AudioComponent.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -276,9 +289,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E5C11B52A2520F4001FBCCE /* AppDelegate.swift in Sources */,
+				5E9797FB2A28D64200077278 /* Constants.swift in Sources */,
 				5EFDB8982A23070900E0F3F3 /* Appwrite.swift in Sources */,
+				5E9707422A27B5200039A5C0 /* AudioPlayer.swift in Sources */,
+				5E5C11BA2A25D97B001FBCCE /* Hoots.swift in Sources */,
 				5EF30F112A214603008546F3 /* Help.swift in Sources */,
+				5E9707402A2723660039A5C0 /* AudioComponent.swift in Sources */,
 				5EF30F142A214615008546F3 /* Profile.swift in Sources */,
+				5E9797F92A28D62E00077278 /* credits.txt in Sources */,
 				5EF30F0D2A2145D0008546F3 /* Detailscreen.swift in Sources */,
 				5E5C11B82A25C762001FBCCE /* Config.swift in Sources */,
 				5ED9E3502A206DEB00BFBDF1 /* Onboarding.swift in Sources */,
@@ -295,6 +313,7 @@
 /* Begin XCBuildConfiguration section */
 		5ED9E3562A206DED00BFBDF1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E5C11B62A253F44001FBCCE /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -355,6 +374,7 @@
 		};
 		5ED9E3572A206DED00BFBDF1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E5C11B62A253F44001FBCCE /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 import DSWaveformImage
 import DSWaveformImageViews
-
+// TODO: Move this to the controller folder
 class AudioManager : NSObject, ObservableObject {
     // AudioRecording
     var audioRecorder : AVAudioRecorder!;
@@ -18,17 +18,15 @@ class AudioManager : NSObject, ObservableObject {
     // Foriegn Class
     var appwrite = AppwriteSerivce.shared;
     
-    static func fetchAllRecording() -> [URL] {
+    static func fetchAllRecording() -> URL {
         do {
-            let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let directoryContents = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
-            _ = FileManager.contents(.default)
-            return directoryContents;
+            var path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+           path =  path.appendingPathComponent(K.DefaultAudio)
+            return path;
         }
         catch{
             print("AudioManager.swift fetchAllRecording",error.localizedDescription)
         }
-        return [];
     }
     
     func recordAudio() {
@@ -41,7 +39,8 @@ class AudioManager : NSObject, ObservableObject {
         }
         
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0];
-        let fileName = path.appendingPathComponent("hoot.m4a")
+
+        let fileName = path.appendingPathComponent(K.DefaultAudio)
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 12000,
@@ -60,7 +59,6 @@ class AudioManager : NSObject, ObservableObject {
     }
     
     func stopRecording() {
-        appwrite.createAudioFile(audioId: "myname", title: "String", userId: "userID", isComment: false, parentId: nil)
         if let audioRecorderSafe = audioRecorder {
             audioRecorderSafe.stop()
         }

@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>APPWRITE_BUCKET_ID</key>
-	<string>${APPWRITE_BUCKET_ID}</string>
-	<key>APPWRITE_AUDIO_COLLECTION_ID</key>
-	<string>${APPWRITE_AUDIO_COLLECTION_ID}</string>
-	<key>APPWRITE_USER_COLLECTION_ID</key>
-	<string>${APPWRITE_USER_COLLECTION_ID}</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -37,5 +31,11 @@
 	<string>${APPWRITE_PROJECT_KEY}</string>
 	<key>APPWRITE_DATABASE_ID</key>
 	<string>${APPWRITE_DATABASE_ID}</string>
+	<key>APPWRITE_USER_COLLECTION_ID</key>
+	<string>${APPWRITE_USER_COLLECTION_ID}</string>
+	<key>APPWRITE_AUDIO_COLLECTION_ID</key>
+	<string>${APPWRITE_AUDIO_COLLECTION_ID}</string>
+	<key>APPWRITE_BUCKET_ID</key>
+	<string>${APPWRITE_BUCKET_ID}</string>
 </dict>
 </plist>

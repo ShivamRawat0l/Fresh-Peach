@@ -16,6 +16,7 @@ struct Homescreen: View {
     @EnvironmentObject var googleAuthService : GoogleAuthService ;
     var appwrite = AppwriteSerivce.shared;
     
+    @StateObject var hootsArray = Hoots()
     // @States
     @State var waveformView = [Float]()
     @State var liveConfiguration: Waveform.Configuration = Waveform.Configuration(
@@ -24,6 +25,7 @@ struct Homescreen: View {
     @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State var title = "";
     
+    @State var postingAudio = false;
     var audioManager = AudioManager()
     var body: some View {
         VStack{
@@ -56,14 +58,39 @@ struct Homescreen: View {
             
             // MARK: Listing
             List {
-                TextEditor(text: $title).frame(height: 300)
+                if( postingAudio  )  {
+                    VStack{
+                        WaveformLiveCanvas(samples: waveformView,configuration: liveConfiguration,
+                                           renderer: LinearWaveformRenderer(),
+                                           shouldDrawSilencePadding: true)
+                        .frame(height: 50)
+                        Button {
+                            AudioPlayer.playAudioFromURL(url: AudioManager.fetchAllRecording())
+                        }label: {
+                            Text("play")
+                        }
+                    }
+                }
+                
+                TextEditor(text: $title).frame(height: 200)
+                
                 Button {
+                    Task {
+                        let currentTimeStamp = Date.now.timeIntervalSince1970.description.components(separatedBy: ".")[0]
+                        let audioId = "\(googleAuthService.userId)T\(currentTimeStamp)"
+                        await appwrite.createAudioFile(audioId:audioId, title: title, userId: googleAuthService.userId, isComment: false, parentId: nil, waveform: waveformView)
+                        postingAudio = false ;
+                        title = "";
+                        await hootsArray.getPosts()
+                    }
                 } label: {
                     Text("Post")
-                }.disabled(title == "")
-                ForEach(1...10, id:\.self){  audios in
-                    Color.red.overlay {
-                        Text(String(audios)).padding(20)
+                }.disabled(title == "" && postingAudio)
+                
+                ForEach(0..<hootsArray.hootsData.count, id:\.self){  index in
+                    ZStack {
+                        Color.red
+                        AudioComponent(hootObject: hootsArray.hootsData[index])
                     }.listRowSeparator(.hidden)
                 }
             }.listStyle(PlainListStyle())
@@ -71,10 +98,8 @@ struct Homescreen: View {
             Spacer()
             
             Button {
-                var currentTimeStamp = Date.now.timeIntervalSince1970.description.components(separatedBy: ".")[0]
-                let audioId = "\(googleAuthService.userId)T\(currentTimeStamp)"
+                postingAudio = true;
                 audioManager.stopRecording()
-                appwrite.createAudioFile(audioId:audioId, title: title, userId: googleAuthService.userId, isComment: false, parentId: nil)
                 timer.upstream.connect().cancel()
             } label: {
                 Image("mic")
@@ -89,6 +114,8 @@ struct Homescreen: View {
             )
             .offset(x:0,y:-20)
             .frame(height: 30)
+        }.task{
+            await hootsArray.getPosts()
         }
     }
 }
