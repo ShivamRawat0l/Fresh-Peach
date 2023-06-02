@@ -22,24 +22,25 @@ struct OnboardingView: View  {
     @AppStorage("accessToken") var accessToken = "";
     @AppStorage("email") var email = "";
     @AppStorage("profilePicture") var profilePic = "";
-
+    
     
     @EnvironmentObject  var googleAuthService: GoogleAuthService;
     
     var body: some View {
-        
         VStack {
-          //  NavigationLink(destination: Profile(), isActive: $navigateToProfile ){ EmptyView()}
+            //  NavigationLink(destination: Profile(), isActive: $navigateToProfile ){ EmptyView()}
             if showMessage {
                 Image("onboarding1")
                     .resizable()
                     .frame(width: 300,height: 300)
                     .transition(.move(edge: .bottom))
             }
+            
             Spacer()
+            
             Text("Fresh Peach").font(.system(size: 30))
+            
             Button {
-                
                 if currentProgress == Int(totalScreens){
                     googleAuthService.signin()
                 }else {
@@ -61,9 +62,17 @@ struct OnboardingView: View  {
                             .overlay {
                                 Group {
                                     if currentProgress == Int(totalScreens) {
-                                        Image("google").resizable().aspectRatio(contentMode: .fit).frame(width: 25).foregroundColor(.white)
-                                    } else { Image(systemName: "arrow.forward").resizable().aspectRatio(contentMode: .fit).frame(width: 25).foregroundColor(.white)
-                                        
+                                        Image("google")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 25)
+                                            .foregroundColor(.white)
+                                    } else {
+                                        Image(systemName: "arrow.forward")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 25)
+                                            .foregroundColor(.white)
                                     }}
                             }    
                     }
@@ -79,8 +88,6 @@ struct OnboardingView: View  {
                 progress = 0.03;
                 showMessage = false;
             }
-            
-            
         }
     }
 }
