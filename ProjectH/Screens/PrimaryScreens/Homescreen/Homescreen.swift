@@ -7,8 +7,6 @@
 
 import SwiftUI
 import AVFoundation
-import DSWaveformImage
-import DSWaveformImageViews
 
 struct Homescreen: View {
     
@@ -19,23 +17,14 @@ struct Homescreen: View {
     @StateObject var hootsArray = Hoots()
     // @States
     @State var waveformView = [Float]()
-    @State var liveConfiguration: Waveform.Configuration = Waveform.Configuration(
-        style: .striped(.init(color: UIColor(Color("Secondary")), width: 2, spacing: 2))
-    )
-    @State var liveConfiguration2: Waveform.Configuration = Waveform.Configuration(
-        style: .striped(.init(color: UIColor(Color("Primary")), width: 2, spacing: 2))
-    )
+    @State var currentAudioPlaying = false ;
     @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State var title = "";
     
     @State var postingAudio = true;
     var audioManager = AudioManager()
     
-    
-    init() {
-           UITextView.appearance().backgroundColor = .clear
-       }
-    
+    @State var progress : Float = 0 ;
     var body: some View {
         VStack{
             // MARK: HEADER
@@ -57,16 +46,6 @@ struct Homescreen: View {
                 }
                 
                 Spacer()
-             
-                Rectangle().background(.red).frame(width: 100).mask{
-                        WaveformLiveCanvas(samples: waveformView,configuration: liveConfiguration2,
-                                           renderer: LinearWaveformRenderer(),
-                                           shouldDrawSilencePadding: true)
-                }
-                    .frame(height: 50)
-                    .onReceive(timer){time in
-                        waveformView.append(audioManager.getAmplitude())
-                    }
                 
             }.onAppear {
                 timer
@@ -78,33 +57,29 @@ struct Homescreen: View {
             
             Spacer()
             
-            // MARK: Listing
-            
-            
             if( postingAudio  )  {
-                HStack{
-                    Button {
-                        AudioPlayer.playAudioFromURL(url: AudioManager.fetchAllRecording())
-                    }label: {
-                        Text("play")
-                    }
-                    WaveformLiveCanvas(samples: waveformView,configuration: liveConfiguration,
-                                       renderer: LinearWaveformRenderer(),
-                                       shouldDrawSilencePadding: true).progressViewStyle(.automatic)
-                    .frame(height: 50)
-                }
-                
-                ZStack(alignment: .topLeading){
-                  
-                    TextField(text: $title){
-                            Text("Start typing to post")
-                    }
-                    .padding(.all)
-                    .background(.clear)
-                    
-                }
-                
                 HStack {
+                    Button {
+                        var currentAudioPlayer = AudioPlayerUtil.playAudioFromURL(url: AudioManager.fetchAllRecording())
+                        currentAudioPlaying = false;
+                    }label: {
+                        if( currentAudioPlaying == true ) {
+                            Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
+                        } else {
+                            Image(systemName: "play.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
+                        }
+                    }
+                    AudioPlayer(waveformView: waveformView, progress: $progress)
+                        .frame(height: 50)
+                }.padding()
+                TextField(text: $title){
+                    Text("Start typing to post")
+                }.font(Font.system(size: 30,weight: .heavy))
+                .padding(.all)
+                .background(.clear)
+            
+                HStack {
+                    Spacer()
                     Button {
                         Task {
                             let currentTimeStamp = Date.now.timeIntervalSince1970.description.components(separatedBy: ".")[0]
@@ -115,55 +90,55 @@ struct Homescreen: View {
                             await hootsArray.getPosts()
                         }
                     } label: {
-                        Text("Post")
-                }.disabled(title == "" && postingAudio)
+                        Image(systemName: "checkmark.seal.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 50).foregroundColor(Color("Success"))
+                    }.disabled(title == "" && postingAudio)
                     Button {
-            
-                            postingAudio = false ;
-                            title = "";
+                        postingAudio = false ;
+                        title = "";
                     } label: {
-                        Text("Cancel")
-                }
-                }
-                
+                        Image(systemName: "minus.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 40).foregroundColor(Color("Error"))
+                    }
+                }.padding()
             }
-            
-            
-            
-            List {
-                
+           List {
                 ForEach(0..<hootsArray.hootsData.count, id:\.self){  index in
-                        AudioComponent(hootObject: hootsArray.hootsData[index])
-                    
+                    AudioComponent(hootObject: hootsArray.hootsData[index])
                         .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                        .listRowSeparator(.hidden)
                 }
+           }.listStyle(.plain)
+            .padding(.bottom,40)
+            
+            Button {
+                postingAudio = true;
+                audioManager.stopRecording()
+                timer.upstream.connect().cancel()
+            } label: {
+                
+                Circle().fill(.red)
+                    .overlay(alignment: .center){
+                        Image(systemName: "mic.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit).frame(height: 40)
+                    }.frame(height: 70)
+                
+                
+            }.simultaneousGesture(
+                LongPressGesture(minimumDuration:0.5).onEnded({ _ in
+                    audioManager.recordAudio()
+                    waveformView = [];
+                    
+                    timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+                })
+            )
+            .onReceive(timer){time in
+                waveformView.append(audioManager.getAmplitude())
             }
-            .listStyle(PlainListStyle())
-            .background(.clear)
-            .listRowBackground(Color.clear)
-            .padding(.bottom,20)
-                Button {
-                    postingAudio = true;
-                    audioManager.stopRecording()
-                    timer.upstream.connect().cancel()
-                } label: {
-                    Image("mic")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 70)
-                }.simultaneousGesture(
-                    LongPressGesture(minimumDuration:0.5).onEnded({ _ in
-                        audioManager.recordAudio()
-                        timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
-                    })
-                )
-                .offset(x:0,y:-20)
-                .frame(height: 30)
-            }.task{
-                await hootsArray.getPosts()
-            }
-        
+            .offset(x:0,y:-40)
+            .frame(height: 40)
+        }.task{
+            await hootsArray.getPosts();
+        }
     }
 }
 

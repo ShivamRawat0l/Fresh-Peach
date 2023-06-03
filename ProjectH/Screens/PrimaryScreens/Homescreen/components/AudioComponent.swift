@@ -8,6 +8,8 @@
 import SwiftUI
 import DSWaveformImage
 import DSWaveformImageViews
+import AVFoundation;
+
 struct AudioComponent: View {
     var hootObject : HootsStructure;
     let AudioUrl = {(name: String) in  URL(string: "https://cloud.appwrite.io/v1/storage/buckets/6472f08cd1b379135620/files/\(name)/download?project=64702d2314367a7efc63&mode=admin")}
@@ -15,32 +17,32 @@ struct AudioComponent: View {
     @State var liveConfiguration: Waveform.Configuration = Waveform.Configuration(
         style: .striped(.init(color: .red, width: 3, spacing: 3))
     )
-    
+    @State var audioPlayer : AVAudioPlayer? ;
+    var timer = Timer.publish(every: 0.2, on: .main, in: .common);
+    @State var progress : Float = 0;
     
     var body: some View {
-        
         VStack {
             Text(hootObject.title);
-            // Audio
-            
             Text(String(hootObject.likes.count))
-            
-            
             if let safeAudioURL = AudioUrl(hootObject.name) {
                 Button {
                     Task {
-                        await AudioPlayer.playAudio(name: hootObject.name)
+                        self.audioPlayer =  await AudioPlayerUtil.playAudio(name: hootObject.name)
+                        _ =  self.timer.connect()
                     }
                 } label: {
                     Text("PLAY")
                 }
-                WaveformLiveCanvas(samples: hootObject.waveform,configuration: liveConfiguration,
-                                   renderer: LinearWaveformRenderer(),
-                                   shouldDrawSilencePadding: true)
-                .frame(height: 50)
+                AudioPlayer(waveformView: hootObject.waveform, progress: $progress).frame(height: 50)
+                    .onReceive(timer){ _ in
+                        if let safeAudioPlayer = self.audioPlayer {
+                            self.progress = Float(safeAudioPlayer.currentTime) / Float(safeAudioPlayer.duration);
+                            print("HERE \(self.progress)")
+
+                        }
+                    }
             }
-        }.task {
-            // Load the audio from url
         }
     }
 }
