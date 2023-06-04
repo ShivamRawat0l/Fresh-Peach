@@ -18,7 +18,8 @@ class HootsStructure : Codable{
     var dislikes: [String];
     var commentParent : String;
     var waveform : [Float];
-    init(title: String, id: String, name: String, userId: String, isComment: Bool, likes: [String], dislikes: [String], commentParent: String, comments: [String],waveform : [Float]) {
+    var profilePic : String;
+    init(title: String, id: String, name: String, userId: String, isComment: Bool, likes: [String], dislikes: [String], commentParent: String, comments: [String],waveform : [Float], profilePic: String) {
         self.title = title
         self.id = id
         self.name = name
@@ -29,6 +30,7 @@ class HootsStructure : Codable{
         self.commentParent = commentParent
         self.comments = comments
         self.waveform = waveform;
+        self.profilePic = profilePic;
     }
 }
 
@@ -37,16 +39,3 @@ enum PostType  {
     case likes
 }
 
-class Hoots : ObservableObject {
-    @Published var  hootsData = [HootsStructure]() ;
-
-    func getPosts(_ type : PostType = PostType.recent) async {
-        if(type == PostType.recent){
-            self.hootsData = await AppwriteSerivce.shared.getRecentHoots();
-            print("HERE ", self.hootsData)
-        }else {
-            self.hootsData = await AppwriteSerivce.shared.getLikedHoots();
-        }
-    }
-    
-}

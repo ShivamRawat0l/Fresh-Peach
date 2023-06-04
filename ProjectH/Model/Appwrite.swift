@@ -48,42 +48,70 @@ class AppwriteSerivce : ObservableObject {
         }
     }
     
-    func createAudioFile(audioId: String, title:String,userId: String, isComment : Bool,parentId: String?,waveform: [Float]) async {
-            do {
-                _ = try await databases.createDocument(
-                    databaseId:  Config.APPWRITE_DATABASE_ID,
-                    collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
-                    documentId: audioId,
-                    data: [
-                        "id" : audioId,
-                        "name" : audioId,
-                        "title" : title,
-                        "userId" : userId,
-                        "isComment" : isComment,
-                        "commentParent": parentId ?? "",
-                        "likes": [String](),
-                        "dislikes": [String](),
-                        "waveform" :waveform
-                    ] as [String : Any]
-                )
-                addAudioToStorage(audioId: audioId);
-            } catch {
-                print(error.localizedDescription)
-            }
+    func createCommentAudioFile(audioID: String, name: String , title: String, userID: String ,  parentID: String, waveform: [Float], profilePic: String  ) async {
+        do {
+            _ = try await databases.createDocument(
+                databaseId: Config.APPWRITE_DATABASE_ID,
+                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
+                documentId: audioID,
+                data: [
+                    "id": audioID,
+                    "name": name,
+                    "title": title,
+                    "userId": userID,
+                    "isComment": true,
+                    "commentParent": parentID,
+                    "likes": [String](),
+                    "dislikes": [String](),
+                    "waveform": waveform,
+                    "comments": [String](),
+                    "profilePic": profilePic
+                ] as [String: Any])
+        }
+        catch {
+            print("Fresh-Peach createCommentAudioFile",error.localizedDescription)
+        }
+    }
+    
+    func createAudioFile(audioId: String,name: String ,title:String,userId: String ,waveform: [Float], profilePic: String) async {
+        do {
+            _ = try await databases.createDocument(
+                databaseId:  Config.APPWRITE_DATABASE_ID,
+                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
+                documentId: audioId,
+                data: [
+                    "id" : audioId,
+                    "name" : name,
+                    "title" : title,
+                    "userId" : userId,
+                    "isComment" : false,
+                    "commentParent": "",
+                    "likes": [String](),
+                    "dislikes": [String](),
+                    "waveform" :waveform,
+                    "comments": [String](),
+                    "profilePic": profilePic
+                ] as [String : Any]
+            )
+            addAudioToStorage(audioId: audioId);
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     func deleteRecording( audioId : String ){
         
     }
+    
     func getAudioFromStorage (audioID : String ) async -> ByteBuffer?  {
-            do {
-                var file = try await storage.getFileView(bucketId: Config.APPWRITE_BUCKET_ID, fileId: audioID)
-                return file;
-            }
-            catch {
-                print("Fresh-Peach getAudioFromStorage", error.localizedDescription)
-            }
-            return nil;
+        do {
+            let file = try await storage.getFileView(bucketId: Config.APPWRITE_BUCKET_ID, fileId: audioID)
+            return file;
+        }
+        catch {
+            print("Fresh-Peach getAudioFromStorage", error.localizedDescription)
+        }
+        return nil;
     }
     
     func addAudioToStorage(audioId : String) {
@@ -111,22 +139,57 @@ class AppwriteSerivce : ObservableObject {
     // MARK: Move this function elsewhere ( utils )
     func jsonDecoder(from  : Data){
         do {
-            var jsonDecoder = JSONDecoder()
-            
-            var jsonDetails =  try jsonDecoder.decode(HootsStructure.self,from: from)
+            let jsonDecoder = JSONDecoder()
+            let jsonDetails =  try jsonDecoder.decode(HootsStructure.self,from: from)
             print(jsonDetails)
         } catch {
             print(error.localizedDescription)
         }
     }
     
+    func getCommentsFor(id: String ) async -> [HootsStructure] {
+        var audioFilesData = [HootsStructure]();
+        do {
+            let audioFiles = try await databases.listDocuments(
+                databaseId: Config.APPWRITE_DATABASE_ID,
+                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
+                queries: [
+                    Query.equal("commentParent", value: id)
+                ]
+            )
+            audioFiles.documents.map { document in
+                do{
+                    var convertedObject: [String:Any] = [:]
+                    for (key,value) in document.data {
+                        convertedObject[key] = value.value;
+                    }
+                    let jsonData = try JSONSerialization.data(withJSONObject: convertedObject, options: [])
+                    let decoder = JSONDecoder();
+                    decoder.dateDecodingStrategy = .iso8601
+                    let data = try decoder.decode(HootsStructure.self, from: jsonData)
+                    audioFilesData.append(data)
+                }
+                catch{
+                    print("Fresh-Peach getCommentFor #1",error.localizedDescription)
+                }
+            }
+        }
+        catch{
+            print("Fresh-Peach getCommentsFor #2",error.localizedDescription)
+        }
+        return audioFilesData;
+    }
+    
     func getRecentHoots () async -> [HootsStructure]  {
         // Need to add filter to add using
         var audioFilesData = [HootsStructure]();
         do {
-            var audioFiles = try await databases.listDocuments(
+            let audioFiles = try await databases.listDocuments(
                 databaseId:  Config.APPWRITE_DATABASE_ID,
-                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID
+                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
+                queries: [
+                    Query.equal("isComment", value: false)
+                ]
             );
             audioFiles.documents.map { document in
                 do{

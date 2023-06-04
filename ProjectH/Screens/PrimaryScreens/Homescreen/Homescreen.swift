@@ -9,59 +9,42 @@ import SwiftUI
 import AVFoundation
 
 struct Homescreen: View {
+    @EnvironmentObject var googleAuthService : GoogleAuthService ;
     
     // @Foriegn Classes
-    @EnvironmentObject var googleAuthService : GoogleAuthService ;
     var appwrite = AppwriteSerivce.shared;
     
-    @StateObject var hootsArray = Hoots()
+    @State var hootsArray = [HootsStructure]();
     // @States
     @State var waveformView = [Float]()
     @State var currentAudioPlaying = false ;
-    @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State var timer = Timer.publish(every: 0.01, on: .current, in: .common)
+    @State var playTimer  = Timer.publish(every: 10, on: .main, in: .common) ;
     @State var title = "";
     
-    @State var postingAudio = true;
+    @State var postingAudio = false;
     var audioManager = AudioManager()
-    
+    @State var audioPlayer : AVAudioPlayer?;
     @State var progress : Float = 0 ;
     var body: some View {
         VStack{
-            // MARK: HEADER
-            HStack {
-                NavigationLink {
-                    Profile()
-                }
-                label : {
-                    AsyncImage(url: URL(string:googleAuthService.profilePic),scale: 1) { status in
-                        status
-                            .resizable()
-                            .scaledToFill()
-                    }
-                placeholder: {
-                    Color.purple.opacity(0.1)
-                }
-                .frame(width:60,height: 60)
-                .cornerRadius(80)
-                }
-                
-                Spacer()
-                
-            }.onAppear {
-                timer
-                    .upstream
-                    .connect()
-                    .cancel()
-            }
-            .padding()
+            ProfileHeader()
             
             Spacer()
             
-            if( postingAudio  )  {
+            if(postingAudio)  {
                 HStack {
                     Button {
-                        var currentAudioPlayer = AudioPlayerUtil.playAudioFromURL(url: AudioManager.fetchAllRecording())
-                        currentAudioPlaying = false;
+                        if(currentAudioPlaying){
+                            self.audioPlayer?.stop()
+                            self.playTimer.connect().cancel()
+                            currentAudioPlaying = false ;
+                        }else {
+                            self.audioPlayer = AudioPlayerUtil.playAudioFromURL(url: AudioManager.fetchAllRecording())
+                            currentAudioPlaying = true;
+                            self.playTimer = Timer.publish(every: 0.1, on: .main, in: .common)
+                            _ = self.playTimer.connect()
+                        }
                     }label: {
                         if( currentAudioPlaying == true ) {
                             Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
@@ -71,23 +54,36 @@ struct Homescreen: View {
                     }
                     AudioPlayer(waveformView: waveformView, progress: $progress)
                         .frame(height: 50)
+                        .onReceive(playTimer){ _ in
+                            if let safeAudioPlayer = self.audioPlayer {
+                                self.progress = Float(safeAudioPlayer.currentTime) / Float(safeAudioPlayer.duration);
+                                print(progress,"progress")
+                                print(safeAudioPlayer.isPlaying)
+                                if( !safeAudioPlayer.isPlaying ){
+                                    self.progress = 0.0;
+                                    currentAudioPlaying = false ;
+                                    self.playTimer.connect().cancel()
+                                }
+                            }
+                        }
                 }.padding()
                 TextField(text: $title){
                     Text("Start typing to post")
-                }.font(Font.system(size: 30,weight: .heavy))
+                }.font(Font
+                    .system(size: 30,weight: .heavy))
                 .padding(.all)
                 .background(.clear)
-            
+                
                 HStack {
                     Spacer()
                     Button {
                         Task {
                             let currentTimeStamp = Date.now.timeIntervalSince1970.description.components(separatedBy: ".")[0]
                             let audioId = "\(googleAuthService.userId)T\(currentTimeStamp)"
-                            await appwrite.createAudioFile(audioId:audioId, title: title, userId: googleAuthService.userId, isComment: false, parentId: nil, waveform: waveformView)
+                            await appwrite.createAudioFile(audioId: audioId, name: googleAuthService.userName, title: title, userId: googleAuthService.userId, waveform: waveformView, profilePic: googleAuthService.profilePic)
                             postingAudio = false ;
                             title = "";
-                            await hootsArray.getPosts()
+                            self.hootsArray = await AppwriteSerivce.shared.getRecentHoots();
                         }
                     } label: {
                         Image(systemName: "checkmark.seal.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 50).foregroundColor(Color("Success"))
@@ -100,35 +96,38 @@ struct Homescreen: View {
                     }
                 }.padding()
             }
-           List {
-                ForEach(0..<hootsArray.hootsData.count, id:\.self){  index in
-                    AudioComponent(hootObject: hootsArray.hootsData[index])
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                }
-           }.listStyle(.plain)
-            .padding(.bottom,40)
             
+            List {
+                ForEach(0..<hootsArray.count, id:\.self){  index in
+                    NavigationLink{
+                        Detailscreen(hootValue: hootsArray[index])
+                    } label: {
+                        AudioComponent(hootObject: hootsArray[index])
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+            }.listStyle(.plain)
+                .padding(.bottom,40)
             Button {
                 postingAudio = true;
                 audioManager.stopRecording()
-                timer.upstream.connect().cancel()
+                self.timer.connect().cancel()
             } label: {
-                
-                Circle().fill(.red)
+                Circle()
+                    .fill(.red)
                     .overlay(alignment: .center){
                         Image(systemName: "mic.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit).frame(height: 40)
                     }.frame(height: 70)
-                
-                
-            }.simultaneousGesture(
+            }
+            .simultaneousGesture(
                 LongPressGesture(minimumDuration:0.5).onEnded({ _ in
                     audioManager.recordAudio()
                     waveformView = [];
-                    
-                    timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+                    self.timer = Timer.publish(every: 0.01, on: .current, in: .common)
+                    _ = self.timer.connect()
                 })
             )
             .onReceive(timer){time in
@@ -137,7 +136,8 @@ struct Homescreen: View {
             .offset(x:0,y:-40)
             .frame(height: 40)
         }.task{
-            await hootsArray.getPosts();
+            hootsArray = await AppwriteSerivce.shared.getRecentHoots();
+            print(hootsArray)
         }
     }
 }
