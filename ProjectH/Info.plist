@@ -2,8 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Poppins-Black</string>
+		<string>Poppins-BlackItalic</string>
+		<string>Poppins-Bold</string>
+		<string>Poppins-BoldItalic</string>
+		<string>Poppins-ExtraBold</string>
+		<string>Poppins-ExtraBoldItalic</string>
+		<string>Poppins-ExtraLight</string>
+		<string>Poppins-ExtraLightItalic</string>
+		<string>Poppins-Italic</string>
+		<string>Poppins-Light</string>
+		<string>Poppins-LightItalic</string>
+		<string>Poppins-Medium</string>
+		<string>Poppins-MediumItalic</string>
+		<string>Poppins-Regular</string>
+		<string>Poppins-SemiBold</string>
+		<string>Poppins-SemiBoldItalic</string>
+		<string>Poppins-Thin</string>
+		<string>Poppins-ThinItalic</string>
+	</array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We require microphone permission to be able to record audio only when use presses the mic icon to record and send the post.</string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

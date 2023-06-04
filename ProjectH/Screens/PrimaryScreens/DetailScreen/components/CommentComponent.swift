@@ -1,32 +1,31 @@
 //
-//  AudioComponent.swift
+//  CommentComponent.swift
 //  ProjectH
 //
-//  Created by Shivam Rawat on 31/05/23.
+//  Created by Shivam Rawat on 04/06/23.
 //
 
 import SwiftUI
 import DSWaveformImage
 import DSWaveformImageViews
-import AVFoundation;
+import AVFoundation
 
-struct AudioComponent: View {
-   @Binding var hootObject : HootsStructure;
+struct CommentComponent: View {
+    @Binding var hootObject : HootsStructure;
     let AudioUrl = {(name: String) in  URL(string: "https://cloud.appwrite.io/v1/storage/buckets/6472f08cd1b379135620/files/\(name)/download?project=64702d2314367a7efc63&mode=admin")}
     
     @State var liveConfiguration: Waveform.Configuration = Waveform.Configuration(
         style: .striped(.init(color: .red, width: 3, spacing: 3))
     )
     @State var audioPlayer : AVAudioPlayer? ;
-    @State var timer = Timer.publish(every: 0.2, on: .main, in: .common);
+    @State var timer = Timer.publish(every: 0.05, on: .main, in: .common);
     @State var progress : Float = 0;
     @State var currentAudioPlaying = false ;
-    @EnvironmentObject var googleAuthService : GoogleAuthService ;
-    
-    
+    @EnvironmentObject var googleAuthService : GoogleAuthService;
     var body: some View {
         VStack {
             HStack {
+                Spacer()
                 if let profilePic = URL(string: hootObject.profilePic) {
                     AsyncImage(url: profilePic,scale:1){ status in
                         status.resizable()
@@ -56,11 +55,11 @@ struct AudioComponent: View {
                         }
                     }
                 } label: {
-                    if( currentAudioPlaying == true ) {
-                        Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
-                    } else {
-                        Image(systemName: "play.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
-                    }
+                        if( currentAudioPlaying == true ) {
+                            Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
+                        } else {
+                            Image(systemName: "play.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
+                        }
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
@@ -136,9 +135,9 @@ struct AudioComponent: View {
     }
 }
 
-struct AudioComponent_Previews: PreviewProvider {
+struct CommentComponent_Previews: PreviewProvider {
     static var previews: some View {
         let obj = HootsStructure(title: "Titl", id: "sampleID", name: "Name", userId: "userId", isComment: false, likes: [], dislikes: [], commentParent: "same" , comments : [],waveform: [],profilePic: "")
-        AudioComponent(hootObject: .constant(obj)).environmentObject(GoogleAuthService())
+        CommentComponent(hootObject:.constant(obj)).environmentObject(GoogleAuthService())
     }
 }

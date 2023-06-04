@@ -48,7 +48,7 @@ class AppwriteSerivce : ObservableObject {
         }
     }
     
-    func createCommentAudioFile(audioID: String, name: String , title: String, userID: String ,  parentID: String, waveform: [Float], profilePic: String  ) async {
+    func createCommentAudioFile(audioID: String, name: String , title: String, userID: String ,  parentID: String, waveform: [Float], profilePic: String , comments: [String]  ) async {
         do {
             _ = try await databases.createDocument(
                 databaseId: Config.APPWRITE_DATABASE_ID,
@@ -67,6 +67,18 @@ class AppwriteSerivce : ObservableObject {
                     "comments": [String](),
                     "profilePic": profilePic
                 ] as [String: Any])
+            var mutableComments = comments;
+            
+            mutableComments.append(audioID)
+            _ = try await databases.updateDocument(
+                databaseId: Config.APPWRITE_DATABASE_ID,
+                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
+                documentId: parentID,
+                data: [
+                    "comments": mutableComments
+                ]
+            )
+            addAudioToStorage(audioId: audioID)
         }
         catch {
             print("Fresh-Peach createCommentAudioFile",error.localizedDescription)
@@ -212,7 +224,25 @@ class AppwriteSerivce : ObservableObject {
         return audioFilesData;
     }
     
+    func addReactionToPost (parentID: String, likes: [String], dislikes: [String]) async {
+        do {
+            _ = try await databases.updateDocument(
+                databaseId: Config.APPWRITE_DATABASE_ID,
+                collectionId: Config.APPWRITE_AUDIO_COLLECTION_ID,
+                documentId: parentID,
+                data: [
+                    "likes" : likes,
+                    "dislikes":dislikes
+                ]
+            )
+        }
+        catch {
+            print("Fresh-Peach addReactionToPost #1",error.localizedDescription)
+        }
+    }
+    
     func getLikedHoots() -> [HootsStructure]{
+        // TODO: Add tab to the homescreen then add this.
         return []
     }
 }

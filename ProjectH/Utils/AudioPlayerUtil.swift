@@ -14,7 +14,6 @@ class AudioPlayerUtil {
     
     static func playAudio(name: String) async -> AVAudioPlayer? {
         do {
-            print(name)
             let audioByteBuffer = await AppwriteSerivce.shared.getAudioFromStorage(audioID: name)
             if let safeAudioURL = audioByteBuffer {
                 self.audioPlayer = try AVAudioPlayer(data: Data(buffer: safeAudioURL), fileTypeHint:"m4a")
