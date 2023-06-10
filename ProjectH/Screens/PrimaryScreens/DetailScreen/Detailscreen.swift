@@ -43,11 +43,13 @@ struct Detailscreen: View {
                     self.timer.connect().cancel()
                 } label: {
                     Circle()
-                        .fill(.red)
+                        .fill(Color("Secondary"))
                         .overlay(alignment: .center){
                             Image(systemName: "mic.fill")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit).frame(height: 40)
+                                .foregroundColor(Color("Background"))
+
                         }.frame(height: 70)
                 }
                 .simultaneousGesture(

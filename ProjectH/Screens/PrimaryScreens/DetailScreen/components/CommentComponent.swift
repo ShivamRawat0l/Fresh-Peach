@@ -26,6 +26,7 @@ struct CommentComponent: View {
         VStack {
             HStack {
                 Spacer()
+                
                 if let profilePic = URL(string: hootObject.profilePic) {
                     AsyncImage(url: profilePic,scale:1){ status in
                         status.resizable()
@@ -37,9 +38,14 @@ struct CommentComponent: View {
                     .cornerRadius(40)
                 }
                 Text(hootObject.name)
-                Spacer()
+                    .foregroundColor(Color("Secondary"))
+                    .multilineTextAlignment(.trailing)
+                    .font(.custom("Poppins-Regular", size: 14))
             }
-            Text(hootObject.title);
+            Text(hootObject.title)
+                .foregroundColor(Color("Secondary"))
+                .multilineTextAlignment(.leading)
+                .font(.custom("Poppins-Bold", size: 17))
             HStack{
                 Button {
                     Task {
@@ -55,11 +61,19 @@ struct CommentComponent: View {
                         }
                     }
                 } label: {
-                        if( currentAudioPlaying == true ) {
-                            Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
-                        } else {
-                            Image(systemName: "play.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
-                        }
+                    if( currentAudioPlaying == true ) {
+                        Image(systemName: "stop.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 24)
+                            .foregroundColor(Color("Danger"))
+                    } else {
+                        Image(systemName: "play.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 24)
+                            .foregroundColor(Color("Secondary"))
+                    }
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
@@ -96,10 +110,13 @@ struct CommentComponent: View {
                 } label: {
                     if( hootObject.likes.contains(googleAuthService.userId) ){
                         Image(systemName:  "hand.thumbsup.fill")
+                            .foregroundColor(Color("Secondary"))
                     }else {
                         Image(systemName:  "hand.thumbsup")
+                            .foregroundColor(Color("Secondary"))
                     }
                     Text(String(hootObject.likes.count))
+                        .foregroundColor(Color("Secondary"))
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
@@ -122,14 +139,19 @@ struct CommentComponent: View {
                 } label: {
                     if ( hootObject.dislikes.contains(googleAuthService.userId)) {
                         Image(systemName: "hand.thumbsdown.fill")
+                            .foregroundColor(Color("Secondary"))
                     }else {
                         Image(systemName: "hand.thumbsdown")
+                            .foregroundColor(Color("Secondary"))
                     }
                     Text(String(hootObject.dislikes.count))
+                        .foregroundColor(Color("Secondary"))
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 Image(systemName: "message.circle.fill")
+                    .foregroundColor(Color("Secondary"))
                 Text(String(hootObject.comments.count))
+                    .foregroundColor(Color("Secondary"))
             }
         }
     }

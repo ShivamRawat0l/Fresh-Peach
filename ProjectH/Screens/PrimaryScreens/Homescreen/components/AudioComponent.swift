@@ -11,7 +11,7 @@ import DSWaveformImageViews
 import AVFoundation;
 
 struct AudioComponent: View {
-   @Binding var hootObject : HootsStructure;
+    @Binding var hootObject : HootsStructure;
     let AudioUrl = {(name: String) in  URL(string: "https://cloud.appwrite.io/v1/storage/buckets/6472f08cd1b379135620/files/\(name)/download?project=64702d2314367a7efc63&mode=admin")}
     
     @State var liveConfiguration: Waveform.Configuration = Waveform.Configuration(
@@ -25,7 +25,7 @@ struct AudioComponent: View {
     
     
     var body: some View {
-        VStack {
+        VStack (alignment:.leading){
             HStack {
                 if let profilePic = URL(string: hootObject.profilePic) {
                     AsyncImage(url: profilePic,scale:1){ status in
@@ -38,9 +38,15 @@ struct AudioComponent: View {
                     .cornerRadius(40)
                 }
                 Text(hootObject.name)
+                    .foregroundColor(Color("Secondary"))
+                    .multilineTextAlignment(.leading)
+                    .font(.custom("Poppins-Regular", size: 14))
                 Spacer()
             }
-            Text(hootObject.title);
+            Text(hootObject.title)
+                .foregroundColor(Color("Secondary"))
+                .multilineTextAlignment(.leading)
+                .font(.custom("Poppins-Black", size: 20))
             HStack{
                 Button {
                     Task {
@@ -57,9 +63,17 @@ struct AudioComponent: View {
                     }
                 } label: {
                     if( currentAudioPlaying == true ) {
-                        Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
+                        Image(systemName: "stop.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35)
+                            .foregroundColor(Color("Danger"))
                     } else {
-                        Image(systemName: "play.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
+                        Image(systemName: "play.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35)
+                            .foregroundColor(Color("Primary"))
                     }
                 }
                 .buttonStyle(BorderlessButtonStyle())
@@ -76,7 +90,7 @@ struct AudioComponent: View {
                         }
                     }
             }
-            HStack{
+            HStack(alignment:.bottom){
                 Button {
                     Task {
                         if( hootObject.likes.contains(googleAuthService.userId)) {
@@ -97,10 +111,13 @@ struct AudioComponent: View {
                 } label: {
                     if( hootObject.likes.contains(googleAuthService.userId) ){
                         Image(systemName:  "hand.thumbsup.fill")
+                            .foregroundColor(Color("Primary"))
                     }else {
                         Image(systemName:  "hand.thumbsup")
+                            .foregroundColor(Color("Primary"))
                     }
                     Text(String(hootObject.likes.count))
+                        .foregroundColor(Color("Primary"))
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
@@ -123,14 +140,19 @@ struct AudioComponent: View {
                 } label: {
                     if ( hootObject.dislikes.contains(googleAuthService.userId)) {
                         Image(systemName: "hand.thumbsdown.fill")
+                            .foregroundColor(Color("Primary"))
                     }else {
                         Image(systemName: "hand.thumbsdown")
+                            .foregroundColor(Color("Primary"))
                     }
                     Text(String(hootObject.dislikes.count))
+                        .foregroundColor(Color("Primary"))
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 Image(systemName: "message.circle.fill")
+                    .foregroundColor(Color("Primary"))
                 Text(String(hootObject.comments.count))
+                    .foregroundColor(Color("Primary"))
             }
         }
     }

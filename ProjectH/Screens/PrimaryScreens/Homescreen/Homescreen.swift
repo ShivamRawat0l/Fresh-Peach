@@ -19,12 +19,13 @@ struct Homescreen: View {
     @State var waveformView = [Float]()
     @State var timer = Timer.publish(every: 0.01, on: .current, in: .common)
     
+    @State var isRecording = false ;
     @State var postingAudio = false;
     var audioManager = AudioManager()
     var body: some View {
         VStack{
             ProfileHeader()
-            
+            Divider().frame(height:2).overlay(isRecording ? Color.red :   Color("Secondary"))
             Spacer()
             
             if(postingAudio)  {
@@ -39,28 +40,35 @@ struct Homescreen: View {
                         AudioComponent(hootObject: $hootsArray[index])
                     }
                     .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.plain)
-            .padding(.bottom,40)
+            
+            
+            Divider().frame(height:2).overlay(isRecording ? Color.red :   Color("Secondary"))
             Button {
                 postingAudio = true;
                 audioManager.stopRecording()
+                self.isRecording = false;
                 self.timer.connect().cancel()
             } label: {
                 Circle()
-                    .fill(.red)
+                    .fill(Color("Secondary"))
                     .overlay(alignment: .center){
                         Image(systemName: "mic.fill")
                             .resizable()
-                            .aspectRatio(contentMode: .fit).frame(height: 40)
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(Color("Background"))
+                            .frame(height: 40)
                     }.frame(height: 70)
+                    .offset(x:0,y:-30)
+                
             }
             .simultaneousGesture(
                 LongPressGesture(minimumDuration:0.5).onEnded({ _ in
                     audioManager.recordAudio()
                     waveformView = [];
+                    self.isRecording = true;
                     self.timer = Timer.publish(every: 0.01, on: .current, in: .common)
                     _ = self.timer.connect()
                 })
@@ -68,9 +76,9 @@ struct Homescreen: View {
             .onReceive(timer){time in
                 waveformView.append(audioManager.getAmplitude())
             }
-            .offset(x:0,y:-40)
-            .frame(height: 40)
-        }.task{
+            .frame(height: 50)
+        }
+        .task{
             hootsArray = await AppwriteSerivce.shared.getRecentHoots();
         }
     }

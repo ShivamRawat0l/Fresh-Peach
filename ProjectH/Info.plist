@@ -4,11 +4,11 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Poppins-Black</string>
-		<string>Poppins-BlackItalic</string>
-		<string>Poppins-Bold</string>
-		<string>Poppins-BoldItalic</string>
-		<string>Poppins-ExtraBold</string>
+		<string>Poppins-Black.ttf</string>
+		<string>Poppins-BlackItalic.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-BoldItalic.ttf</string>
+		<string>Poppins-ExtraBold.ttf</string>
 		<string>Poppins-ExtraBoldItalic</string>
 		<string>Poppins-ExtraLight</string>
 		<string>Poppins-ExtraLightItalic</string>

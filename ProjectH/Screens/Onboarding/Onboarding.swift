@@ -9,37 +9,38 @@ import SwiftUI
 import GoogleSignInSwift
 import GoogleSignIn
 struct OnboardingView: View  {
+    // Local Variable
     let totalScreens = 3.0;
+    
     // Animations
     @State private var showMessage = false;
     @State private var progress = 0.03;
     @State private var currentProgress = 0;
     
-    // Navigations
-    @State private var navigateToProfile = false ;
-    
-    @AppStorage("onboarding") var isOnboarding : Bool = true;
-    @AppStorage("accessToken") var accessToken = "";
-    @AppStorage("email") var email = "";
-    @AppStorage("profilePicture") var profilePic = "";
-    
-    
+    // Environment Object
     @EnvironmentObject  var googleAuthService: GoogleAuthService;
+    
+    var titles = ["Welcome to FREE SPEECH","Find Your Audio Community.","Where Voices Unite.","Explore the World of Audio."]
+    var descriptions = [" Share your voice, engage in meaningful conversations, and explore a diverse range of audio content that resonates with your interests and passions.", "You can express your creativity, connect with fellow enthusiasts, and dive into a multitude of audio experiences that span from immersive stories to soulful music.","Connect with voices that inspire you, engage in lively discussions.Experience the magic of audio connections like never before. ","BETA ACCESS "]
     
     var body: some View {
         VStack {
-            //  NavigationLink(destination: Profile(), isActive: $navigateToProfile ){ EmptyView()}
+            Text(titles[currentProgress])
+                .multilineTextAlignment(.center)
+                .font(.custom("Poppins-Black", size: 35))
+                .padding(.top,20)
+                .padding(.horizontal,40)
             if showMessage {
-                Image("onboarding1")
+                Image("onboarding" + String(currentProgress))
                     .resizable()
-                    .frame(width: 300,height: 300)
+                    .frame(width: 260,height: 260)
                     .transition(.move(edge: .bottom))
             }
-            
+            Text(descriptions[currentProgress])
+                .multilineTextAlignment(.center)
+                .font(.custom("Poppins-Bold", size: 20))
+                .padding(.horizontal,40)
             Spacer()
-            
-            Text("Fresh Peach").font(.system(size: 30))
-            
             Button {
                 if currentProgress == Int(totalScreens){
                     googleAuthService.signin()
@@ -82,7 +83,6 @@ struct OnboardingView: View  {
                     showMessage = true;
                 }
             }
-            .padding()
             .onDisappear{
                 currentProgress = 0 ;
                 progress = 0.03;
@@ -97,3 +97,4 @@ struct OnboardingView_Previews: PreviewProvider {
         OnboardingView()
     }
 }
+

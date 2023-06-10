@@ -28,6 +28,7 @@ struct Profile: View {
                     googleAuthService.signout();
                 } label: {
                     Text("Sign Out")
+                    
                 }
             }
         }
