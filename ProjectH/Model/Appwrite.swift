@@ -12,43 +12,37 @@ import NIOCore
 class AppwriteSerivce : ObservableObject {
     
     static var shared = AppwriteSerivce()
-    @Published var fileUploaded = false;
     
     var client =  Client()
         .setEndpoint("https://cloud.appwrite.io/v1")
         .setProject(Config.APPWRITE_PROJECT_KEY);
-    
     var databases : Databases;
     var storage : Storage;
-    
     
     private init(){
         databases =  Databases(client);
         storage = Storage(client);
     }
     
-    
-    func createUser(userId:String, name:String, email:String, pfp: String){
-        Task {
-            do {
-                _ = try await databases.createDocument(
-                    databaseId:  Config.APPWRITE_DATABASE_ID,
-                    collectionId: Config.APPWRITE_USER_COLLECTION_ID,
-                    documentId: userId,
-                    data: [
-                        "id" : userId,
-                        "name" : name,
-                        "email" : email,
-                        "profilePicture" : pfp,
-                    ] as [String : Any]
-                )
-            } catch {
-                print(error.localizedDescription)
-            }
+    func createUser(userId:String, name:String, email:String, pfp: String) async {
+        do {
+            _ = try await databases.createDocument(
+                databaseId:  Config.APPWRITE_DATABASE_ID,
+                collectionId: Config.APPWRITE_USER_COLLECTION_ID,
+                documentId: userId,
+                data: [
+                    "id" : userId,
+                    "name" : name,
+                    "email" : email,
+                    "profilePicture" : pfp,
+                ] as [String : Any]
+            )
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
-    func createCommentAudioFile(audioID: String, name: String , title: String, userID: String ,  parentID: String, waveform: [Float], profilePic: String , comments: [String]  ) async {
+    func createCommentAudioFile(audioID: String, name: String , title: String, userID: String ,  parentID: String, waveform: [Float], profilePic: String , comments: [String] , duration : Double ) async {
         do {
             _ = try await databases.createDocument(
                 databaseId: Config.APPWRITE_DATABASE_ID,
@@ -65,7 +59,8 @@ class AppwriteSerivce : ObservableObject {
                     "dislikes": [String](),
                     "waveform": waveform,
                     "comments": [String](),
-                    "profilePic": profilePic
+                    "profilePic": profilePic,
+                    "duration": duration
                 ] as [String: Any])
             var mutableComments = comments;
             
@@ -113,7 +108,7 @@ class AppwriteSerivce : ObservableObject {
     }
     
     func deleteRecording( audioId : String ){
-        
+        // TODO: Implement the deletion functionality
     }
     
     func getAudioFromStorage (audioID : String ) async -> ByteBuffer?  {
@@ -149,17 +144,6 @@ class AppwriteSerivce : ObservableObject {
         }
     }
     
-    // MARK: Move this function elsewhere ( utils )
-    func jsonDecoder(from  : Data){
-        do {
-            let jsonDecoder = JSONDecoder()
-            let jsonDetails =  try jsonDecoder.decode(HootsStructure.self,from: from)
-            print(jsonDetails)
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
     func getCommentsFor(id: String ) async -> [HootsStructure] {
         var audioFilesData = [HootsStructure]();
         do {
@@ -170,7 +154,7 @@ class AppwriteSerivce : ObservableObject {
                     Query.equal("commentParent", value: id)
                 ]
             )
-            audioFiles.documents.map { document in
+            _ = audioFiles.documents.map { document in
                 do{
                     var convertedObject: [String:Any] = [:]
                     for (key,value) in document.data {
@@ -204,7 +188,7 @@ class AppwriteSerivce : ObservableObject {
                     Query.equal("isComment", value: false)
                 ]
             );
-            audioFiles.documents.map { document in
+            _ = audioFiles.documents.map { document in
                 do{
                     var convertedObject: [String: Any] = [:]
                     for (key, value) in document.data {

@@ -70,7 +70,7 @@ struct PostingComment: View {
                 Task {
                     let currentTimeStamp = Date.now.timeIntervalSince1970.description.components(separatedBy: ".")[0]
                     let audioId = "\(googleAuthService.userId)T\(currentTimeStamp)"
-                    await appwrite.createCommentAudioFile(audioID: audioId, name: googleAuthService.userName, title: title, userID: googleAuthService.userId, parentID: parentID, waveform: waveformView, profilePic: googleAuthService.profilePic,comments: commentIDs)
+                    await appwrite.createCommentAudioFile(audioID: audioId, name: googleAuthService.userName, title: title, userID: googleAuthService.userId, parentID: parentID, waveform: waveformView, profilePic: googleAuthService.profilePic,comments: commentIDs,duration: Double(waveformView.count) * 0.01)
                     postingAudio = false ;
                     title = "";
                     self.comments = await AppwriteSerivce.shared.getCommentsFor(id: parentID);

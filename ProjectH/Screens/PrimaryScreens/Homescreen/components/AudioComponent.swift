@@ -78,21 +78,19 @@ struct AudioComponent: View {
                     if( currentAudioPlaying == true ) {
                         Image(systemName: "stop.circle.fill")
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35)
+                            .frame(width: 40,height: 40)
                             .foregroundColor(Color("Danger"))
                     } else {
                         Image(systemName: "play.circle")
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35)
+                            .frame(width: 40,height: 40)
                             .foregroundColor(Color("Primary"))
                     }
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
             }
-            HStack(alignment:.bottom){
+            HStack(alignment:.center){
                 Button {
                     Task {
                         if( hootObject.likes.contains(googleAuthService.userId)) {
@@ -119,6 +117,7 @@ struct AudioComponent: View {
                             .foregroundColor(Color("Primary"))
                     }
                     Text(String(hootObject.likes.count))
+                        .font(.custom("Poppins-Bold", size: 16))
                         .foregroundColor(Color("Primary"))
                 }
                 .buttonStyle(BorderlessButtonStyle())
@@ -148,13 +147,16 @@ struct AudioComponent: View {
                             .foregroundColor(Color("Primary"))
                     }
                     Text(String(hootObject.dislikes.count))
+                        .font(.custom("Poppins-Bold", size: 16))
                         .foregroundColor(Color("Primary"))
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 Image(systemName: "message.circle.fill")
                     .foregroundColor(Color("Primary"))
                 Text(String(hootObject.comments.count))
+                    .font(.custom("Poppins-Bold", size: 16))
                     .foregroundColor(Color("Primary"))
+                Spacer()
                 if let safeAudioPlayer = audioPlayer {
                     Text(String(format: "%.1f" , safeAudioPlayer.currentTime) + " / " +   String(format: "%.1f", safeAudioPlayer.duration) + "s")
                         .font(.custom("Poppins-Bold", size: 16))

@@ -6,50 +6,92 @@
 //
 
 import SwiftUI
+import Toast
 
 struct Detailscreen: View {
-    @Binding var hootValue : HootsStructure;
+    
     var appwrite = AppwriteSerivce.shared;
+    var audioManager = AudioManager();
+    
     @State var comments = [HootsStructure]();
     @State var postingAudio = false;
-    var audioManager = AudioManager();
     @State var waveformView = [Float]();
     @State var timer = Timer.publish(every: 1, on: .main, in: .common)
+    
+    @Binding var hootValue : HootsStructure;
+    @State var timeCounter: Double = 0.0;
     var body: some View {
         ZStack{
             Color("Background").ignoresSafeArea()
             VStack{
-                AudioComponent(hootObject: $hootValue).padding(.all)
+                AudioComponent(hootObject: $hootValue)
+                    .padding(.vertical,20)
+                    .padding(.horizontal,30)
                 Divider()
+                if(timeCounter == 0.0 ){
+                    Text("Comments!").font(.custom("Poppins-ExtraBold", size: 20))
+                }
+                else {
+                    VStack{
+                        Text("Recording")
+                            .foregroundColor(Color.red)
+                            .font(.custom("Poppins-ExtraBold", size: 20))
+                        Text(String(format:"%.1fs",timeCounter))
+                            .foregroundColor(Color.red)
+                            .font(.custom("Poppins-ExtraBold", size: 20))
+                    }
+                }
                 if(postingAudio)  {
                     PostingComment(waveformView: $waveformView, postingAudio: $postingAudio, comments: $comments, parentID: hootValue.id,commentIDs: hootValue.comments)
                 }
+                
                 List {
                     ForEach(0..<comments.count , id: \.self) { index in
-                        NavigationLink{
-                            Detailscreen(hootValue: $comments[index])
-                        } label: {
+                        ZStack {
+                            NavigationLink{
+                                Detailscreen(hootValue: $comments[index])
+                            } label: {
+                                EmptyView()
+                            }
                             CommentComponent(hootObject: $comments[index])
+                                .padding(.all,20)
+                                .background(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                                .shadow(radius: 5)
                         }
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                     }
                 }
                 .listStyle(.plain)
-                .padding(.bottom,40)
+                
                 Button {
-                    postingAudio = true;
                     audioManager.stopRecording()
                     self.timer.connect().cancel()
+                    if(timeCounter < 2){
+                        let toast = Toast.text("Hold the mic to start recording")
+                        toast.show()
+                    }
+                    else if(timeCounter < 10) {
+                        let toast = Toast.text("Minimum length of audio should be 10 sec")
+                        toast.show()
+                        
+                    } else {
+                        postingAudio = true;
+                        
+                    }
+                    timeCounter = 0;
+                    
                 } label: {
                     Circle()
                         .fill(Color("Secondary"))
                         .overlay(alignment: .center){
                             Image(systemName: "mic.fill")
                                 .resizable()
-                                .aspectRatio(contentMode: .fit).frame(height: 40)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 40)
                                 .foregroundColor(Color("Background"))
-
+                            
                         }.frame(height: 70)
                 }
                 .simultaneousGesture(
@@ -61,10 +103,10 @@ struct Detailscreen: View {
                     })
                 )
                 .onReceive(timer){time in
+                    timeCounter = timeCounter + 0.01;
                     waveformView.append(audioManager.getAmplitude())
                 }
-                .offset(x:0,y:-40)
-                .frame(height: 40)
+                .frame(height: 50)
                 
             }.task {
                 comments = await appwrite.getCommentsFor(id: hootValue.id)
