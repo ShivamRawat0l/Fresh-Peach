@@ -39,7 +39,7 @@ struct PostingComment: View {
                 if( currentAudioPlaying == true ) {
                     Image(systemName: "stop.circle.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30).foregroundColor(Color("Danger"))
                 } else {
-                    Image(systemName: "play.fill").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
+                    Image(systemName: "play.circle").resizable().aspectRatio(contentMode: .fit).frame(width: 30)
                 }
             }
             AudioPlayer(waveformView: waveformView, progress: $progress)

@@ -12,7 +12,7 @@ struct ProfileHeader: View {
     
     @EnvironmentObject var googleAuthService : GoogleAuthService ;
     var body: some View {
-            HStack {
+        HStack(alignment: .center){
                 NavigationLink {
                     Profile()
                 }
@@ -26,11 +26,10 @@ struct ProfileHeader: View {
                     Color.purple.opacity(0.1)
                 }
                 .frame(width:60,height: 60)
-                .cornerRadius(80)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
-                
                 Spacer()
-                
+                Text("Your Feed!").font(.custom("Poppins-ExtraBold", size: 30))
             }
             .padding()
     }

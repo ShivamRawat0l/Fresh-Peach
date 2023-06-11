@@ -29,7 +29,8 @@ struct AudioComponent: View {
             HStack {
                 if let profilePic = URL(string: hootObject.profilePic) {
                     AsyncImage(url: profilePic,scale:1){ status in
-                        status.resizable()
+                        status
+                            .resizable()
                             .scaledToFill()
                     } placeholder: {
                         Color.purple.opacity(0.1)
@@ -40,7 +41,7 @@ struct AudioComponent: View {
                 Text(hootObject.name)
                     .foregroundColor(Color("Secondary"))
                     .multilineTextAlignment(.leading)
-                    .font(.custom("Poppins-Regular", size: 14))
+                    .font(.custom("Poppins-Thin", size: 18))
                 Spacer()
             }
             Text(hootObject.title)
@@ -69,7 +70,7 @@ struct AudioComponent: View {
                             .frame(width: 35)
                             .foregroundColor(Color("Danger"))
                     } else {
-                        Image(systemName: "play.fill")
+                        Image(systemName: "play.circle")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 35)

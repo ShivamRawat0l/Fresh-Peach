@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import Introspect
 
 struct Homescreen: View {
     @EnvironmentObject var googleAuthService : GoogleAuthService ;
@@ -25,23 +26,33 @@ struct Homescreen: View {
     var body: some View {
         VStack{
             ProfileHeader()
-            Divider().frame(height:2).overlay(isRecording ? Color.red :   Color("Secondary"))
             Spacer()
             
             if(postingAudio)  {
-                PostingAudio(waveformView: $waveformView, postingAudio: $postingAudio, hootsArray: $hootsArray)
+                PostingAudio(waveformView: $waveformView, postingAudio: $postingAudio, hootsArray: $hootsArray).transition(.move(edge: .top))
             }
             
-            List {
+            List{
                 ForEach(0..<hootsArray.count, id:\.self){  index in
                     NavigationLink{
                         Detailscreen(hootValue: $hootsArray[index])
                     } label: {
                         AudioComponent(hootObject: $hootsArray[index])
+                            .padding(.all)
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                            .shadow(radius: 5)
+
                     }
                     .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 }
             }
+            .introspectTableView { tableView in
+                tableView.showsVerticalScrollIndicator = false;
+                 }
+            .transition(.move(edge: .bottom))
             .listStyle(.plain)
             
             

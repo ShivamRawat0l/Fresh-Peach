@@ -12,7 +12,7 @@ struct Profile: View {
     var body: some View {
         ZStack{
             Color("Background").ignoresSafeArea()
-            VStack {
+            VStack{
                 AsyncImage(url: URL(string: googleAuthService.profilePic),scale:1){ status in
                     status.resizable().scaledToFit()
                 } placeholder: {
@@ -20,9 +20,18 @@ struct Profile: View {
                 }
                 .frame(width: 200, height: 200)
                 .cornerRadius(150)
-                Text(googleAuthService.userName)
-                Text(googleAuthService.email)
-
+                VStack (alignment: .leading) {
+                        Text("Username: ")
+                            .font(.custom("Poppins-Thin", size: 20))
+                        Text(googleAuthService.userName)
+                            .font(.custom("Poppins-ExtraBold", size: 20))
+                    
+                        Text("Email: ")
+                            .font(.custom("Poppins-Think", size: 20))
+                        Text(googleAuthService.email)
+                            .font(.custom("Poppins-ExtraBold", size: 20))
+                    
+                }.padding(.top, 20)
                 Spacer()
                 Button {
                     googleAuthService.signout();

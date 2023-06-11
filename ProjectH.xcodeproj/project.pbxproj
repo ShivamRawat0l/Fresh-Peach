@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E393AD82A34F004004A8F2A /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 5E393AD72A34F004004A8F2A /* Introspect */; };
 		5E4E29482A2BC19D00815527 /* ProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4E29472A2BC19D00815527 /* ProfileHeader.swift */; };
 		5E5C11B52A2520F4001FBCCE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5C11B42A2520F4001FBCCE /* AppDelegate.swift */; };
 		5E5C11B82A25C762001FBCCE /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5C11B72A25C762001FBCCE /* Config.swift */; };
@@ -110,6 +111,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EFDB88F2A2280F100E0F3F3 /* DSWaveformImage in Frameworks */,
+				5E393AD82A34F004004A8F2A /* Introspect in Frameworks */,
 				5EFDB8912A2280F100E0F3F3 /* DSWaveformImageViews in Frameworks */,
 				5EF30F1D2A21E4BA008546F3 /* GoogleSignInSwift in Frameworks */,
 				5EF30F092A213AC1008546F3 /* Appwrite in Frameworks */,
@@ -321,6 +323,7 @@
 				5EF30F1C2A21E4BA008546F3 /* GoogleSignInSwift */,
 				5EFDB88E2A2280F100E0F3F3 /* DSWaveformImage */,
 				5EFDB8902A2280F100E0F3F3 /* DSWaveformImageViews */,
+				5E393AD72A34F004004A8F2A /* Introspect */,
 			);
 			productName = ProjectH;
 			productReference = 5ED9E34A2A206DEB00BFBDF1 /* ProjectH.app */;
@@ -354,6 +357,7 @@
 				5EF30F072A213AC1008546F3 /* XCRemoteSwiftPackageReference "sdk-for-apple" */,
 				5EF30F192A21E4BA008546F3 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				5EFDB88D2A2280F100E0F3F3 /* XCRemoteSwiftPackageReference "DSWaveformImage" */,
+				5E393AD62A34F004004A8F2A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 5ED9E34B2A206DEB00BFBDF1 /* Products */;
 			projectDirPath = "";
@@ -633,6 +637,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5E393AD62A34F004004A8F2A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.0;
+			};
+		};
 		5EF30F072A213AC1008546F3 /* XCRemoteSwiftPackageReference "sdk-for-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/appwrite/sdk-for-apple";
@@ -660,6 +672,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5E393AD72A34F004004A8F2A /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5E393AD62A34F004004A8F2A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
 		5EF30F082A213AC1008546F3 /* Appwrite */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5EF30F072A213AC1008546F3 /* XCRemoteSwiftPackageReference "sdk-for-apple" */;

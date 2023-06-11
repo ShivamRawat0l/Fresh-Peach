@@ -41,7 +41,7 @@ struct PostingAudio: View {
                         .frame(width: 30)
                         .foregroundColor(Color("Danger"))
                 } else {
-                    Image(systemName: "play.fill")
+                    Image(systemName: "play.circle")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 30)
