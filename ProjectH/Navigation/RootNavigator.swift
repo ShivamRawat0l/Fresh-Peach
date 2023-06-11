@@ -12,7 +12,7 @@ struct RootNavigator: View {
     var body: some View {
         NavigationView {
             ZStack(alignment: .center) {
-                Color( "Background").ignoresSafeArea()
+                Color(googleAuthService.accessToken != "" ? "Background" : "Secondary").ignoresSafeArea()
                 Group{
                     if( googleAuthService.accessToken != "" ){
                         Homescreen()

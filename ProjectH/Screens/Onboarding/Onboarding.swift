@@ -26,6 +26,7 @@ struct OnboardingView: View  {
     var body: some View {
         VStack {
             Text(titles[currentProgress])
+                .foregroundColor(Color.white)
                 .multilineTextAlignment(.center)
                 .font(.custom("Poppins-Black", size: 35))
                 .padding(.top,20)
@@ -37,6 +38,7 @@ struct OnboardingView: View  {
                     .transition(.move(edge: .bottom))
             }
             Text(descriptions[currentProgress])
+                .foregroundColor(Color.white)
                 .multilineTextAlignment(.center)
                 .font(.custom("Poppins-Bold", size: 20))
                 .padding(.horizontal,40)
