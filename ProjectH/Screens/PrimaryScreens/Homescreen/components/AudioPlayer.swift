@@ -18,12 +18,12 @@ struct AudioPlayer: View {
     @Binding var progress: Float ;
     var circleWaveform = false;
     var liveConfiguration: Waveform.Configuration = Waveform.Configuration(
-        style: .striped(.init(color: UIColor(Color("Secondary")), width: 2,spacing: 2))
+        style: .striped(.init(color: UIColor(Color("Primary")), width: 2,spacing: 2))
     )
     
     
     var liveConfiguration2: Waveform.Configuration = Waveform.Configuration(
-        style: .striped(.init(color: UIColor(Color("Primary")), width: 2, spacing: 2))
+        style: .striped(.init(color: UIColor(Color("Secondary").opacity(0.4)), width: 2, spacing: 2))
     )
     
     var body: some View {

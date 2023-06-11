@@ -12,7 +12,7 @@ struct PostingComment: View {
     
     @EnvironmentObject var googleAuthService : GoogleAuthService ;
     @State var currentAudioPlaying : Bool = false ;
-    @State var playTimer  = Timer.publish(every: 10, on: .main, in: .common) ;
+    @State var playTimer  = Timer.publish(every: 0.05, on: .main, in: .common) ;
     @Binding var waveformView : [Float];
     @State var progress : Float = 0 ;
     @State var audioPlayer : AVAudioPlayer?;

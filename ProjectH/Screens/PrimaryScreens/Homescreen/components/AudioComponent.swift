@@ -18,9 +18,10 @@ struct AudioComponent: View {
         style: .striped(.init(color: .red, width: 3, spacing: 3))
     )
     @State var audioPlayer : AVAudioPlayer? ;
-    @State var timer = Timer.publish(every: 0.2, on: .main, in: .common);
+    @State var timer = Timer.publish(every: 0.05, on: .main, in: .common);
     @State var progress : Float = 0;
     @State var currentAudioPlaying = false ;
+    @State var timeCounter = 0.0;
     @EnvironmentObject var googleAuthService : GoogleAuthService ;
     
     
@@ -36,7 +37,7 @@ struct AudioComponent: View {
                         Color.purple.opacity(0.1)
                     }
                     .frame(width:30,height: 30)
-                    .cornerRadius(40)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 Text(hootObject.name)
                     .foregroundColor(Color("Secondary"))
@@ -49,6 +50,17 @@ struct AudioComponent: View {
                 .multilineTextAlignment(.leading)
                 .font(.custom("Poppins-Black", size: 20))
             HStack{
+                AudioPlayer(waveformView: hootObject.waveform, progress: $progress).frame(height: 50)
+                    .onReceive(timer){ _ in
+                        if let safeAudioPlayer = self.audioPlayer {
+                            self.progress = Float(safeAudioPlayer.currentTime) / Float(safeAudioPlayer.duration);
+                            if( !safeAudioPlayer.isPlaying ) {
+                                self.timer.connect().cancel()
+                                self.progress = 0.0;
+                                self.currentAudioPlaying = false;
+                            }
+                        }
+                    }
                 Button {
                     Task {
                         if (currentAudioPlaying == false ){
@@ -79,17 +91,6 @@ struct AudioComponent: View {
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
-                AudioPlayer(waveformView: hootObject.waveform, progress: $progress).frame(height: 50)
-                    .onReceive(timer){ _ in
-                        if let safeAudioPlayer = self.audioPlayer {
-                            self.progress = Float(safeAudioPlayer.currentTime) / Float(safeAudioPlayer.duration);
-                            if( !safeAudioPlayer.isPlaying ) {
-                                self.timer.connect().cancel()
-                                self.progress = 0.0;
-                                self.currentAudioPlaying = false;
-                            }
-                        }
-                    }
             }
             HStack(alignment:.bottom){
                 Button {
@@ -154,6 +155,14 @@ struct AudioComponent: View {
                     .foregroundColor(Color("Primary"))
                 Text(String(hootObject.comments.count))
                     .foregroundColor(Color("Primary"))
+                if let safeAudioPlayer = audioPlayer {
+                    Text(String(format: "%.1f" , safeAudioPlayer.currentTime) + " / " +   String(format: "%.1f", safeAudioPlayer.duration) + "s")
+                        .font(.custom("Poppins-Bold", size: 16))
+                } else {
+                    
+                    Text("0.0 / " +   String(format: "%.1f", hootObject.duration) + "s")
+                        .font(.custom("Poppins-Bold", size: 16))
+                }
             }
         }
     }
@@ -161,7 +170,7 @@ struct AudioComponent: View {
 
 struct AudioComponent_Previews: PreviewProvider {
     static var previews: some View {
-        let obj = HootsStructure(title: "Titl", id: "sampleID", name: "Name", userId: "userId", isComment: false, likes: [], dislikes: [], commentParent: "same" , comments : [],waveform: [],profilePic: "")
+        let obj = HootsStructure(title: "Titl", id: "sampleID", name: "Name", userId: "userId", isComment: false, likes: [], dislikes: [], commentParent: "same" , comments : [],waveform: [],profilePic: "", duration: 0.0 )
         AudioComponent(hootObject: .constant(obj)).environmentObject(GoogleAuthService())
     }
 }

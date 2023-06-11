@@ -12,7 +12,7 @@ import NIOCore
 class AppwriteSerivce : ObservableObject {
     
     static var shared = AppwriteSerivce()
-    @Published var fileUploaded = true;
+    @Published var fileUploaded = false;
     
     var client =  Client()
         .setEndpoint("https://cloud.appwrite.io/v1")
@@ -85,7 +85,7 @@ class AppwriteSerivce : ObservableObject {
         }
     }
     
-    func createAudioFile(audioId: String,name: String ,title:String,userId: String ,waveform: [Float], profilePic: String) async {
+    func createAudioFile(audioId: String,name: String ,title:String,userId: String ,waveform: [Float], profilePic: String, duration: Double) async {
         do {
             _ = try await databases.createDocument(
                 databaseId:  Config.APPWRITE_DATABASE_ID,
@@ -102,7 +102,8 @@ class AppwriteSerivce : ObservableObject {
                     "dislikes": [String](),
                     "waveform" :waveform,
                     "comments": [String](),
-                    "profilePic": profilePic
+                    "profilePic": profilePic,
+                    "duration": duration
                 ] as [String : Any]
             )
             addAudioToStorage(audioId: audioId);

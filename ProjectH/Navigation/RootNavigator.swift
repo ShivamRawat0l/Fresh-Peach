@@ -25,6 +25,7 @@ struct RootNavigator: View {
         }.environmentObject(googleAuthService)
     }
 }
+
 struct RootNavigator_Previews: PreviewProvider {
     
     static var previews: some View {

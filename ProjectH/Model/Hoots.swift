@@ -19,7 +19,8 @@ class HootsStructure : Codable{
     var commentParent : String;
     var waveform : [Float];
     var profilePic : String;
-    init(title: String, id: String, name: String, userId: String, isComment: Bool, likes: [String], dislikes: [String], commentParent: String, comments: [String],waveform : [Float], profilePic: String) {
+    var duration : Double;
+    init(title: String, id: String, name: String, userId: String, isComment: Bool, likes: [String], dislikes: [String], commentParent: String, comments: [String],waveform : [Float], profilePic: String, duration : Double ) {
         self.title = title
         self.id = id
         self.name = name
@@ -31,6 +32,7 @@ class HootsStructure : Codable{
         self.comments = comments
         self.waveform = waveform;
         self.profilePic = profilePic;
+        self.duration = duration;
     }
 }
 

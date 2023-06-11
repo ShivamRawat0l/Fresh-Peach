@@ -159,7 +159,7 @@ struct CommentComponent: View {
 
 struct CommentComponent_Previews: PreviewProvider {
     static var previews: some View {
-        let obj = HootsStructure(title: "Titl", id: "sampleID", name: "Name", userId: "userId", isComment: false, likes: [], dislikes: [], commentParent: "same" , comments : [],waveform: [],profilePic: "")
+        let obj = HootsStructure(title: "Titl", id: "sampleID", name: "Name", userId: "userId", isComment: false, likes: [], dislikes: [], commentParent: "same" , comments : [],waveform: [],profilePic: "", duration: 0.0)
         CommentComponent(hootObject:.constant(obj)).environmentObject(GoogleAuthService())
     }
 }

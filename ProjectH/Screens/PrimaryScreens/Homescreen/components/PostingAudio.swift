@@ -11,13 +11,13 @@ import AVFoundation
 struct PostingAudio: View {
     @EnvironmentObject var googleAuthService : GoogleAuthService ;
     @State var currentAudioPlaying : Bool = false ;
-    @State var playTimer  = Timer.publish(every: 10, on: .main, in: .common) ;
+    @State var playTimer  = Timer.publish(every: 0.05, on: .main, in: .common) ;
     @Binding var waveformView : [Float]
     @State var progress : Float = 0 ;
     @State var audioPlayer : AVAudioPlayer?;
     @State var title = "";
     @Binding var postingAudio : Bool;
-    @Binding var hootsArray : [HootsStructure]; 
+    @Binding var hootsArray : [HootsStructure];
     var appwrite = AppwriteSerivce.shared;
     
     var body: some View {
@@ -45,6 +45,7 @@ struct PostingAudio: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 30)
+                        .foregroundColor(Color("Primary"))
                 }
             }
             AudioPlayer(waveformView: waveformView, progress: $progress)
@@ -76,7 +77,7 @@ struct PostingAudio: View {
                 Task {
                     let currentTimeStamp = Date.now.timeIntervalSince1970.description.components(separatedBy: ".")[0]
                     let audioId = "\(googleAuthService.userId)T\(currentTimeStamp)"
-                    await appwrite.createAudioFile(audioId: audioId, name: googleAuthService.userName, title: title, userId: googleAuthService.userId, waveform: waveformView, profilePic: googleAuthService.profilePic)
+                    await appwrite.createAudioFile(audioId: audioId, name: googleAuthService.userName, title: title, userId: googleAuthService.userId, waveform: waveformView, profilePic: googleAuthService.profilePic, duration : Double(waveformView.count) * 0.01 )
                     postingAudio = false ;
                     title = "";
                     self.hootsArray = await AppwriteSerivce.shared.getRecentHoots();
